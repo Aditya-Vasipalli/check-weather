@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pacifico', cursive;
+    color: lavenderblush;
+}
+
+body {
+    background: url('assets/bg.jpg');
+    width: 100%;
+    height: 100vh; 
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; 
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(15px);
+    z-index: 0; 
+}
+
+.main-container {
+    width: 300px;
+    height: 496px;
+    z-index: 1;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.15), 
+        rgba(255, 255, 255, 0.15) 
+    );
+    border-radius: 12px;
+    backdrop-filter: blur(100px);
+    padding: 20px;
+}
+
+/* input details and thier styles */
+.input-container{
+ position: relative;
+}
+
+.city-input{
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background: rgb(255, 240, 245, 0.15);
+    outline: none;
+    font-weight: 500;
+    transition: 0.25s;
+    padding-right: 15%;
+}
+
+.city-input:focus{
+    border: 3px solid rgb(255, 240, 245, 0.15);
+}
+
+.city-input ::placeholder{
+    color: rgb(252, 223, 233, 0.75);
+    
+}
+
+.search-btn{
+    position: absolute;
+    right: 1%;
+    top: 25%;
+    transform: translate(-50%);
+    background: none;
+    display: flex;
+    border: none;
+    cursor: pointer;
+}
+
+/* End of input container */
