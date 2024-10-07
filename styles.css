@@ -4,6 +4,7 @@
     box-sizing: border-box;
     font-family: 'Pacifico', cursive;
     color: lavenderblush;
+    font-weight: 600;
 }
 
 body {
@@ -39,12 +40,19 @@ body::before {
     );
     border-radius: 12px;
     backdrop-filter: blur(100px);
-    padding: 20px;
+    padding: 25px;
 }
+/* UTILITIES */
+.regular-txt{
+    font-weight: 400;
+}
+
+/* End of UTILITIES */
 
 /* input details and thier styles */
 .input-container{
  position: relative;
+ margin-bottom: 25px;
 }
 
 .city-input{
@@ -80,3 +88,104 @@ body::before {
 }
 
 /* End of input container */
+
+/* weather info */
+.weather-info{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.location-date-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.location{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.weather-summary-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.weather-summary-img{
+    width: 120px;
+    height: 120px;
+}
+.weather-summary-info{
+    text-align: end;
+}
+.weather-conditions-container {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.condition-item{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.condition-item span{
+    font-size: 30px;
+}
+
+.forecast-items-container {
+    display: flex;
+    gap: 15px;
+    overflow: auto;
+    padding-bottom: 12px;
+
+}
+
+.forecast-items-container::-webkit-scrollbar {
+    height: 8px;
+}
+.forecast-items-container::-webkit-scrollbar-track {
+    background: rgb(255, 240, 245, 0.1);
+    border-radius: 99px;
+}
+.forecast-items-container::-webkit-scrollbar-thumb{
+    background: rgba(11, 8, 9, 0.15);
+}
+
+.forecast-item:hover{
+    background: rgba(255, 240, 245, 0.15);
+}
+
+.forecast-item{
+    min-width: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    align-items: center;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.forecast-item-img {
+    width: 35px;
+    height: 35px;
+}
+/* end of weather info */
+
+/* Message */
+.section-message{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    margin-top: 25%;
+}
+
+.message-img{
+    height: 180px;
+    width: fit-content;
+}
+/* End Message */
