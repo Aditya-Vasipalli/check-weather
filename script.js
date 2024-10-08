@@ -1,16 +1,16 @@
-const apiKey = 'your_api_key_here';
+const apiKey = '1051016c2ba82db0af421934639ae8fd';
 const cityInput = document.querySelector('.city-input');
 const searchBtn = document.querySelector('.search-btn');
 const weatherInfoSection = document.querySelector('.weather-info');
 const notFoundSection = document.querySelector('.not-found');
 const searchCitySection = document.querySelector('.search-city');
-const forecastContainer = document.createElement('div');  // New forecast container
+const forecastContainer = document.createElement('div');  
 
 searchBtn.addEventListener('click', () => {
     const city = cityInput.value;
     if (!city) return;
 
-    // First, get latitude and longitude from city name using geocoding API
+  
     const geocodingApiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
 
     fetch(geocodingApiUrl)
@@ -24,7 +24,7 @@ searchBtn.addEventListener('click', () => {
 
             const { lat, lon, name, country } = locationData[0];
 
-            // Fetch weather and forecast data using OneCall API 3.0
+           
             const forecastApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${apiKey}&units=metric`;
 
             return fetch(forecastApiUrl).then(response => response.json()).then(forecastData => {
@@ -42,7 +42,7 @@ function updateWeatherInfo(data, cityName, countryCode) {
     const humidityText = document.querySelector('.humidity-value-txt');
     const windText = document.querySelector('.wind-value-txt');
 
-    // Use current data from OneCall API
+
     const currentWeather = data.current;
 
     countryText.textContent = `${cityName}, ${countryCode}`;
@@ -51,17 +51,17 @@ function updateWeatherInfo(data, cityName, countryCode) {
     humidityText.textContent = `${currentWeather.humidity}%`;
     windText.textContent = `${currentWeather.wind_speed} m/s`;
 
-    // Show the weather info section
+    
     notFoundSection.style.display = 'none';
     searchCitySection.style.display = 'none';
     weatherInfoSection.style.display = 'block';
 }
 
 function updateForecastInfo(data) {
-    // Clear existing forecast data
+  
     forecastContainer.innerHTML = '';
 
-    const dailyForecast = data.daily.slice(1, 4); // Get next 3 days
+    const dailyForecast = data.daily.slice(1, 4); 
 
     dailyForecast.forEach(day => {
         const forecastDate = new Date(day.dt * 1000).toLocaleDateString();
@@ -80,6 +80,6 @@ function updateForecastInfo(data) {
         forecastContainer.innerHTML += forecastHTML;
     });
 
-    // Append forecast container to weather info section
+ 
     weatherInfoSection.appendChild(forecastContainer);
 }
