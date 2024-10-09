@@ -1,85 +1,63 @@
-const apiKey = 'your_api_key_here';
-const cityInput = document.querySelector('.city-input');
-const searchBtn = document.querySelector('.search-btn');
-const weatherInfoSection = document.querySelector('.weather-info');
-const notFoundSection = document.querySelector('.not-found');
-const searchCitySection = document.querySelector('.search-city');
-const forecastContainer = document.createElement('div');  // New forecast container
+const apiKey = '1051016c2ba82db0af421934639ae8fd'; // Replace with your actual API key
 
-searchBtn.addEventListener('click', () => {
-    const city = cityInput.value;
-    if (!city) return;
+// Fetch location data based on city name
+const fetchLocationData = (city) => {
+    const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
 
-    // First, get latitude and longitude from city name using geocoding API
-    const geocodingApiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${apiKey}`;
-
-    fetch(geocodingApiUrl)
-        .then(response => response.json())
-        .then(locationData => {
-            if (locationData.length === 0) {
-                notFoundSection.style.display = 'block';
-                weatherInfoSection.style.display = 'none';
-                return;
+    return fetch(geoUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('City not found');
             }
-
-            const { lat, lon, name, country } = locationData[0];
-
-            // Fetch weather and forecast data using OneCall API 3.0
-            const forecastApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly&appid=${apiKey}&units=metric`;
-
-            return fetch(forecastApiUrl).then(response => response.json()).then(forecastData => {
-                updateWeatherInfo(forecastData, name, country);
-                updateForecastInfo(forecastData);
-            });
+            return response.json();
         })
-        .catch(error => console.error('Error fetching weather data:', error));
+        .then(locationData => {
+            // If no location data is returned, throw an error
+            if (locationData.length === 0) {
+                throw new Error('City not found');
+            }
+            const { lat, lon } = locationData[0];
+            return { lat, lon };
+        });
+};
+
+// Fetch weather data based on latitude and longitude
+const fetchWeatherData = (lat, lon) => {
+    const weatherUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=hourly,daily&appid=${apiKey}&units=metric`; // Change 'units' to 'imperial' for Fahrenheit
+
+    return fetch(weatherUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Weather data not found');
+            }
+            return response.json();
+        });
+};
+
+// Handle city search on button click
+document.querySelector('.search-btn').addEventListener('click', () => {
+    const city = document.querySelector('.city-input').value.trim();
+    if (city === "") {
+        alert('Please enter a city name');
+        return;
+    }
+
+    fetchLocationData(city)
+        .then(({ lat, lon }) => {
+            return fetchWeatherData(lat, lon); // Fetch weather data
+        })
+        .then(weatherData => {
+            // Update the weather info in HTML
+            document.querySelector('.weather-info').style.display = 'block';
+            document.querySelector('.country-text').textContent = city; // Display city name
+            document.querySelector('.temp-text').textContent = `${weatherData.current.temp} °C`; // Current temperature
+            document.querySelector('.condition-txt').textContent = weatherData.current.weather[0].description; // Weather condition
+            document.querySelector('.humidity-value-txt').textContent = `${weatherData.current.humidity}%`; // Humidity
+            document.querySelector('.wind-value-txt').textContent = `${weatherData.current.wind_speed} m/s`; // Wind speed
+        })
+        .catch(error => {
+            console.error(error);
+            document.querySelector('.not-found').style.display = 'block'; // Show not found message
+            document.querySelector('.weather-info').style.display = 'none'; // Hide weather info
+        });
 });
-
-function updateWeatherInfo(data, cityName, countryCode) {
-    const countryText = document.querySelector('.country-text');
-    const tempText = document.querySelector('.temp-text');
-    const conditionText = document.querySelector('.condition-txt');
-    const humidityText = document.querySelector('.humidity-value-txt');
-    const windText = document.querySelector('.wind-value-txt');
-
-    // Use current data from OneCall API
-    const currentWeather = data.current;
-
-    countryText.textContent = `${cityName}, ${countryCode}`;
-    tempText.textContent = `${Math.round(currentWeather.temp)} °C`;
-    conditionText.textContent = currentWeather.weather[0].description;
-    humidityText.textContent = `${currentWeather.humidity}%`;
-    windText.textContent = `${currentWeather.wind_speed} m/s`;
-
-    // Show the weather info section
-    notFoundSection.style.display = 'none';
-    searchCitySection.style.display = 'none';
-    weatherInfoSection.style.display = 'block';
-}
-
-function updateForecastInfo(data) {
-    // Clear existing forecast data
-    forecastContainer.innerHTML = '';
-
-    const dailyForecast = data.daily.slice(1, 4); // Get next 3 days
-
-    dailyForecast.forEach(day => {
-        const forecastDate = new Date(day.dt * 1000).toLocaleDateString();
-        const tempDay = Math.round(day.temp.day);
-        const tempNight = Math.round(day.temp.night);
-        const description = day.weather[0].description;
-
-        const forecastHTML = `
-            <div class="forecast-day">
-                <h5>${forecastDate}</h5>
-                <p>Day: ${tempDay} °C, Night: ${tempNight} °C</p>
-                <p>${description}</p>
-            </div>
-        `;
-
-        forecastContainer.innerHTML += forecastHTML;
-    });
-
-    // Append forecast container to weather info section
-    weatherInfoSection.appendChild(forecastContainer);
-}
