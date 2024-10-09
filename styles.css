@@ -174,7 +174,7 @@ body::before {
 }
 /* end of weather info */
 
-/* Message */
+/* Message info */
 .section-message{
     display: flex;
     flex-direction: column;
