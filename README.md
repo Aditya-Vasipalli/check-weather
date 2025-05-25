@@ -1,4 +1,4 @@
-# check-weather
+# check the weather forecast
 
 A website that shows the weather forecast data of the asked city.
 
